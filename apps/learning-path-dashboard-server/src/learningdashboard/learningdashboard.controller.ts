@@ -7,4 +7,21 @@ import { LearningDashboardService } from "./learningdashboard.service";
 @common.Controller("learningDashboards")
 export class LearningDashboardController {
   constructor(protected readonly service: LearningDashboardService) {}
+
+  @common.Get("/learningPath/:learningPathId/totalReadingTime")
+  @swagger.ApiOkResponse({
+    type: Number
+  })
+  @swagger.ApiNotFoundResponse({
+    type: errors.NotFoundException
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException
+  })
+  async GetTotalReadingTimeForLearningPath(
+    @common.Body()
+    body: string
+  ): Promise<number> {
+        return this.service.GetTotalReadingTimeForLearningPath(body);
+      }
 }
