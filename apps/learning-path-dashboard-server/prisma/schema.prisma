@@ -1,0 +1,72 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Learner {
+  createdAt              DateTime            @default(now())
+  email                  String?
+  id                     String              @id @default(cuid())
+  name                   String?
+  progresses             Progress[]
+  readingStatisticsItems ReadingStatistics[]
+  updatedAt              DateTime            @updatedAt
+}
+
+model Instructor {
+  createdAt     DateTime       @default(now())
+  email         String?
+  id            String         @id @default(cuid())
+  learningPaths LearningPath[]
+  name          String?
+  updatedAt     DateTime       @updatedAt
+}
+
+model LearningPath {
+  createdAt    DateTime    @default(now())
+  id           String      @id @default(cuid())
+  instructor   Instructor? @relation(fields: [instructorId], references: [id])
+  instructorId String?
+  progresses   Progress[]
+  title        String?
+  updatedAt    DateTime    @updatedAt
+}
+
+model Progress {
+  createdAt          DateTime      @default(now())
+  id                 String        @id @default(cuid())
+  learner            Learner?      @relation(fields: [learnerId], references: [id])
+  learnerId          String?
+  learningPath       LearningPath? @relation(fields: [learningPathId], references: [id])
+  learningPathId     String?
+  progressPercentage Int?
+  updatedAt          DateTime      @updatedAt
+}
+
+model ReadingStatistics {
+  createdAt          DateTime          @default(now())
+  id                 String            @id @default(cuid())
+  learner            Learner?          @relation(fields: [learnerId], references: [id])
+  learnerId          String?
+  learningResource   LearningResource? @relation(fields: [learningResourceId], references: [id])
+  learningResourceId String?
+  readingTime        Int?
+  updatedAt          DateTime          @updatedAt
+}
+
+model LearningResource {
+  createdAt              DateTime                       @default(now())
+  id                     String                         @id @default(cuid())
+  readingStatisticsItems ReadingStatistics[]
+  title                  String?
+  typeField              EnumLearningResourceTypeField?
+  updatedAt              DateTime                       @updatedAt
+}
+
+enum EnumLearningResourceTypeField {
+  Option1
+}
